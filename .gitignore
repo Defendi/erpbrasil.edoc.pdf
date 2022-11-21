@@ -69,5 +69,6 @@ docs/_build
 
 # Mypy Cache
 .mypy_cache/
+.settings/
 
 tests/output/*

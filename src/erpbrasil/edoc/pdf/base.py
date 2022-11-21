@@ -39,6 +39,7 @@ class ImprimirXml(object):
         self.string_xml = string_xml
         self.output_dir = None
         self.object_xml = objectify.fromstring(self.string_xml, parser=parser)
+        self.object_xml_cce = None
         self.tipo_impressao = None
         self.template = None
         self.pdf = None
@@ -91,6 +92,9 @@ class ImprimirXml(object):
                             'pdf', '--outdir', tempfile.gettempdir(),
                             arq_odt.name, _bg=True)
         lo.wait()
+        lo.wait()
+        lo.wait()
+        lo.wait()
 
         arq_pdf = arq_odt.name[:-3] + 'pdf'
         self.pdf = open(arq_pdf, 'rb').read()
@@ -120,7 +124,7 @@ class ImprimirXml(object):
 
     @classmethod
     def imprimir(self, string_xml=False, caminho_xml=False, output_dir=False,
-                 tipo_impressao=False, logo=False):
+                 tipo_impressao=False, logo=False, cce_xml=False):
         '''
         Método base para a impressão de documentos
 
@@ -143,6 +147,11 @@ class ImprimirXml(object):
             obj.tipo_impressao = tipo_impressao
         else:
             obj.tipo_impressao = obj._identifica_tipo_impressao()
+
+        if cce_xml:
+            obj.object_xml_cce = objectify.fromstring(cce_xml, parser=parser)
+            for count, evento in enumerate(obj.object_xml_cce.evento): 
+                obj.object_xml_cce.evento[count].id = obj.object_xml_cce.evento[count].infEvento.attrib['Id']
 
         obj._renderiza_documento()
 
